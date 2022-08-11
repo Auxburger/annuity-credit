@@ -8,56 +8,69 @@ import plotly.graph_objects as go
 from credit.Apartment import Apartment
 from credit.CombinedCredit import CombinedCredit
 
+
+def compute(rates, repays):
+    for year in range(len(years)):
+        for credit in range(len(credits)):
+            combined.append(CombinedCredit(credits[credit], rates[year][0], repays[year][0], 0, years[year]))
+            i = len(combined) - 1
+            combined[i].add_post_credit(rates[year][1], repays[year][1], 0, 30 - years[year])
+            combined[i].post_credit.add_post_credit(rates[year][2], repays[year][2], 0, 20)
+
+            total = combined[i].get_series_total()
+            annuity = combined[i].get_avg_annuity()
+            rate = total[0][0]
+            repay = total[1][0]
+            capital = total[2][0]
+            results.append(
+                {"credit": combined[i], "annuity": annuity, "rate": rate, "repay": repay, "capital": capital})
+
+            combined[i].add_trace(fig)
+            print("-----------")
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    y = [10, 15, 15]
-    y = [10, 10, 15, 15]
-    z = [0.0272, 0.0285, 0.0285, 0.0303]
-    z = [0.0256, 0.0243, 0.0285, 0.0303]
-    z = [0.0243, 0.0272, 0.0272, 0.0285, 0.0303]
-    t = [0.02, 0.02, 0.02, 0.02]
-    sum = [[450000, 101000]]
+    years = [10, 10, 15]
+    rates = [
+        [[0.0259, 0.0259], [0.0259, 0.0259], [0.0259, 0.0259]],
+        [[0.025, 0.0263], [0.025, 0.0263], [0.025, 0.0263]],
+        [[0.025, 0.0263], [0.025, 0.0263], [0.025, 0.0263]],
+    ]
+    repays = [
+        [0.02, 0.035, 0.1],
+        [0.02, 0.035, 0.1],
+        [0.02, 0.045, 0.1],
+    ]
+    total = 550000
+    credits = [[total - 160000, 160000]]
     combined = []
     i = 0
+
+    # 2,63 168 2,5 rest 15jahre
 
     # nice: 10, 20, 0.0256,0.0256, 0.02, 0.04
     fig = go.Figure()
 
     results = []
-    for year in range(len(y)):
-        for rent in range(len(sum)):
-            combined.append(CombinedCredit(sum[rent], z[year], t[year], 0, y[year], [0, 0], [0, 0]))
-            combined[i].add_post_credit(z[year], 0.04, 0, 30 - y[year])
-            combined[i].post_credit.add_post_credit(z[year], 0.07, 0, 20)
-            total = combined[i].get_series_total()
-            annuity = combined[i].get_avg_annuity()
-            rate = total[0][0]
-            redemption = total[1][0]
-            capital = total[2][0]
-            results.append(
-                {"credit": combined[i], "annuity": annuity, "rate": rate, "redemption": redemption, "capital": capital})
-
-            combined[i].add_trace(fig)
-            print("-----------")
-            i += 1
+    compute(rates, repays)
 
     print("-----------")
-    for year in range(len(y)):
-        for rent in range(len(sum)):
-            combined.append(CombinedCredit(sum[rent], z[year], t[year], 0, y[year], [0, 0], [0, 0]))
-            combined[i].add_post_credit(0.05, t[year], 0, 30 - y[year])
-            combined[i].post_credit.add_post_credit(0.05, 0.02, 0, 20)
-            total = combined[i].get_series_total()
-            annuity = combined[i].get_avg_annuity()
-            rate = total[0][0]
-            redemption = total[1][0]
-            capital = total[2][0]
-            results.append(
-                {"credit": combined[i], "annuity": annuity, "rate": rate, "redemption": redemption, "capital": capital})
 
-            combined[i].add_trace(fig)
-            print("-----------")
-            i += 1
+    rates = [
+        [[0.0259, 0.0259], [0.05, 0.05], [0.05, 0.05]],
+        [[0.025, 0.0263], [0.05, 0.05], [0.05, 0.05]],
+        [[0.025, 0.0263], [0.05, 0.05], [0.05, 0.05]],
+    ]
+
+    repays = [
+        [0.02, 0.01, 0.05],
+        [0.02, 0.01, 0.05],
+        [0.02, 0.02, 0.075],
+    ]
+
+    #compute(rates, repays)
+
     """
     apartment = Apartment(16, 45, 90)
     apartment.add_trace(fig)
@@ -68,19 +81,20 @@ if __name__ == '__main__':
     apartment = Apartment(24, 45, 90)
     apartment.add_trace(fig)
     """
+
     results = sorted(results, key=lambda d: d['rate'])
     for result in results:
         annuity = result["annuity"]
         rate = result["rate"]
-        redemption = result["redemption"]
+        repay = result["repay"]
         capital = result["capital"]
         print(
-            f"Total {result['credit']}:\t\t\t\t\t\t\t\t\t\t ~{annuity}\t\t\t-{rate:.2f}\t\t\t+{redemption:.2f}\t\t={capital:.2f}")
+            f"Total {result['credit']}:\t\t\t\t\t\t\t\t\t\t ~{annuity}\t\t\t-{rate:.2f}\t\t\t+{repay:.2f}\t\t={capital:.2f}")
 
     # Create and style traces
     # Edit the layout
     fig.update_layout(title='Darlehen',
-                      xaxis_title='Monat',
+                      xaxis_title='Jahr',
                       yaxis_title='Geld in €')
 
     fig.show()
