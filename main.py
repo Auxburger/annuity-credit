@@ -14,8 +14,8 @@ def compute(rates, repays):
         for credit in range(len(credits)):
             combined.append(CombinedCredit(credits[credit], rates[year][0], repays[year][0], 0, years[year]))
             i = len(combined) - 1
-            combined[i].add_post_credit(rates[year][1], repays[year][1], 0, 30 - years[year])
-            combined[i].post_credit.add_post_credit(rates[year][2], repays[year][2], 0, 20)
+            # combined[i].add_post_credit(rates[year][1], repays[year][1], 0, 30 - years[year])
+            # combined[i].post_credit.add_post_credit(rates[year][2], repays[year][2], 0, 20)
 
             total = combined[i].get_series_total()
             annuity = combined[i].get_avg_annuity()
@@ -31,19 +31,17 @@ def compute(rates, repays):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    years = [10, 10, 15]
+    years = [32,32]
     rates = [
-        [[0.0259, 0.0259], [0.0259, 0.0259], [0.0259, 0.0259]],
-        [[0.025, 0.0263], [0.025, 0.0263], [0.025, 0.0263]],
-        [[0.025, 0.0263], [0.025, 0.0263], [0.025, 0.0263]],
+        [[0.026, 0.0263]] * 3,
+        [[0.026, 0.0263]] * 3,
     ]
     repays = [
         [0.02, 0.035, 0.1],
-        [0.02, 0.035, 0.1],
-        [0.02, 0.045, 0.1],
+        [0.04, 0.035, 0.1],
     ]
-    total = 550000
-    credits = [[total - 160000, 160000]]
+    total = 558000
+    credits = [[total - 168000, 168000], [225000, 225000]]
     combined = []
     i = 0
 
@@ -69,16 +67,16 @@ if __name__ == '__main__':
         [0.02, 0.02, 0.075],
     ]
 
-    #compute(rates, repays)
+    # compute(rates, repays)
 
     """
-    apartment = Apartment(16, 45, 90)
+    apartment = Apartment(16, 30, 90)
     apartment.add_trace(fig)
-    apartment = Apartment(18, 45, 90)
+    apartment = Apartment(18, 30, 90)
     apartment.add_trace(fig)
-    apartment = Apartment(20, 45, 90)
+    apartment = Apartment(20, 30, 90)
     apartment.add_trace(fig)
-    apartment = Apartment(24, 45, 90)
+    apartment = Apartment(24, 30, 90)
     apartment.add_trace(fig)
     """
 

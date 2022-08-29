@@ -1,5 +1,6 @@
 import numpy as np
 
+from credit.Utils import Utils
 from credit.Colors import colors
 from credit.Credit import Credit
 import plotly.graph_objects as go
@@ -64,15 +65,14 @@ class CombinedCredit:
         return series.tolist()
 
     def get_series_yearly(self):
-        series = np.around(np.add(np.array(self.d1.get_series_yearly()), np.array(self.d2.get_series_yearly())),
-                           2)
+
+        series = Utils.rounded_sum_arrays(self.d1.get_series_yearly(), self.d2.get_series_yearly())
         if self.post_credit is not None:
             series = np.concatenate((series, np.array(self.post_credit.get_series_yearly())), axis=1)
         return series.tolist()
 
     def get_series_total(self):
-        series = np.around(np.add(np.array(self.d1.get_series_total()), np.array(self.d2.get_series_total())),
-                           2)
+        series = Utils.rounded_sum_arrays(self.d1.get_series_total(), self.d2.get_series_total())
         if self.post_credit is not None:
             post = self.post_credit.get_series_total()
             capital = post[2][0]
@@ -102,7 +102,7 @@ class CombinedCredit:
 
         i = 0
         for s in range(len(series[3])):  # hausgeld
-            # series[3][i] = round(series[3][s] + 12 * 400 * i, 2)
+            series[3][i] = round(series[3][s] + 12 * 370 * i, 2)
             i += 1
 
         color = next(colors)

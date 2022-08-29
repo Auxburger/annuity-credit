@@ -1,6 +1,8 @@
 import math
 from abc import abstractmethod
 
+import numpy as np
+
 
 class Series():
 
@@ -25,8 +27,8 @@ class Series():
 
     def get_series_yearly(self):
         series = self.reduce_series_from_monthly(12)
-        return series
+        return np.array(series)
 
     def get_series_total(self):
         series = self.reduce_series_from_monthly()
-        return series
+        return np.array(series)
